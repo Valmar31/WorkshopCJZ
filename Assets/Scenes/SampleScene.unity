@@ -458,6 +458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 8.84
   rig: {fileID: 1240752086}
+  anim: {fileID: 1240752085}
 --- !u!58 &1240752088
 CircleCollider2D:
   m_ObjectHideFlags: 0

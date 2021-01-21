@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     public float speed;
     public Rigidbody2D rig;
+    public Animator anim;
 
     // Start is called before the first frame update - é chamado uma vez ao inicializar o jogo
     void Start() {
@@ -24,10 +25,17 @@ public class Player : MonoBehaviour {
 
         if(direction > 0) {
             transform.eulerAngles = new Vector2(0, 0);
+            anim.SetInteger("transition", 1);
         }
 
         if (direction < 0) {
             transform.eulerAngles = new Vector2(0, 180);
+            anim.SetInteger("transition", 1);
         }
+
+        if (direction == 0) {
+            anim.SetInteger("transition", 0);
+        }
+    
     }
 }
