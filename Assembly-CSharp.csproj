@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Enemy\FlightEnemy.cs" />
+     <Compile Include="Assets\Scripts\Enemy\SpawEnemy.cs" />
      <Compile Include="Assets\Scripts\Player\Player.cs" />
      <Compile Include="Assets\Sprites\Free Pixel Art Forest\Demo\MoveBackground.cs" />
      <None Include="Assets\Sprites\Free Pixel Art Forest\Contact.txt" />

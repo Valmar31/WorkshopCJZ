@@ -5,12 +5,15 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     public float speed;
     public float jumpForce;
+    public float atkRadius;
+    public LayerMask enemyLayer; // damage is applied just when hitting the enemy
 
     bool isJumping;
     bool isAttacking;
 
     public Rigidbody2D rig;
     public Animator anim;
+    public Transform firePoint;
 
     // Start is called before the first frame update - é chamado uma vez ao inicializar o jogo
     void Start() {
@@ -44,6 +47,12 @@ public class Player : MonoBehaviour {
             isAttacking = true;
             anim.SetInteger("transition", 3);
 
+            Collider2D hit = Physics2D.OverlapCircle(firePoint.position, atkRadius, enemyLayer);
+
+            if(hit != null) {
+                hit.GetComponent<FlightEnemy>().OnHit();
+            }
+
             StartCoroutine(OnAttacking());
         }
     }
@@ -52,6 +61,11 @@ public class Player : MonoBehaviour {
     IEnumerator OnAttacking() {
         yield return new WaitForSeconds(0.5f);
         isAttacking = false;
+    }
+
+    // visualize hit box 
+    private void OnDrawGizmosSelected() {
+        Gizmos.DrawWireSphere(firePoint.position, atkRadius);
     }
 
     // Called when Physics 2D is altered. - é chamado pela física do jogo
