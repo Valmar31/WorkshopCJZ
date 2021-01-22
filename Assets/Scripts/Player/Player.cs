@@ -1,19 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // library import images
 
 public class Player : MonoBehaviour {
+    public int health; 
     public float speed;
     public float jumpForce;
     public float atkRadius;
-    public LayerMask enemyLayer; // damage is applied just when hitting the enemy
+    public float recoveryTime; 
+    
 
     bool isJumping;
     bool isAttacking;
+    bool isDead;
+
+    float recoveryCount; 
 
     public Rigidbody2D rig;
     public Animator anim;
     public Transform firePoint;
+    public LayerMask enemyLayer; // damage is applied just when hitting the enemy
+    public Image healthBar;
 
     // Start is called before the first frame update - é chamado uma vez ao inicializar o jogo
     void Start() {
@@ -22,8 +30,11 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame - é chamado a cada frame
     void Update() {
-        Jump();
-        OnAttack();
+        if(isDead == false) {
+            Jump();
+            OnAttack();
+        } 
+        
     }
 
     // For flying monster put Rigidbody2D type to kinematic or gravity Scale to 0
@@ -68,8 +79,36 @@ public class Player : MonoBehaviour {
         Gizmos.DrawWireSphere(firePoint.position, atkRadius);
     }
 
+    public void OnHit(int damage) {
+        recoveryCount += Time.deltaTime;
+
+        if(recoveryCount >= recoveryTime && isDead == false) {
+            anim.SetTrigger("hit");
+            health--;
+
+            healthBar.fillAmount -= damage/health;
+
+            GameOver();
+
+            recoveryCount = 0;
+        }
+    }
+
+    void GameOver() {
+        if(health <= 0) {
+            anim.SetTrigger("death");
+            isDead = true; 
+        }
+    }
+
     // Called when Physics 2D is altered. - é chamado pela física do jogo
     void FixedUpdate(){
+        if(isDead == false) {
+            OnMove();
+        }
+    }
+
+    void OnMove() {
         float direction = Input.GetAxis("Horizontal"); //horizontal input
 
         rig.velocity = new Vector2(direction * speed, rig.velocity.y); // y with no speed - y sem velocidade
@@ -86,9 +125,9 @@ public class Player : MonoBehaviour {
 
         if (direction == 0 && !isJumping && !isAttacking) {
             anim.SetInteger("transition", 0);
-        }
-    
+        }    
     }
+
 
     void OnCollisionEnter2D(Collision2D collision) {
         //if = true, player is touching the ground
@@ -96,4 +135,5 @@ public class Player : MonoBehaviour {
             isJumping = false;
         }
     }
+    
 }

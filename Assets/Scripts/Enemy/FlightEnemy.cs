@@ -5,6 +5,7 @@ using UnityEngine;
 public class FlightEnemy : MonoBehaviour {
 
     public int health;
+    public int damage; 
 
     public float speed; 
     float initialSpeed;
@@ -37,15 +38,17 @@ public class FlightEnemy : MonoBehaviour {
             isRight = true;
         }
 
+        // executed when enemy spot the player
         if(distance <= stopDistance) {
             speed = 0f;
+            player.GetComponent<Player>().OnHit(damage); 
         }
         else {
             speed = initialSpeed;
         }
 
     }
-
+ 
     void FixedUpdate() {
 
         if(isRight) {
