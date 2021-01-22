@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI; // library import images
 
 public class Player : MonoBehaviour {
-    public int health; 
+
+    [Header("Attributes")]
+    public float health; 
     public float speed;
     public float jumpForce;
     public float atkRadius;
     public float recoveryTime; 
+    
     
 
     bool isJumping;
@@ -17,11 +20,19 @@ public class Player : MonoBehaviour {
 
     float recoveryCount; 
 
+    [Header("Components")]
     public Rigidbody2D rig;
     public Animator anim;
     public Transform firePoint;
     public LayerMask enemyLayer; // damage is applied just when hitting the enemy
     public Image healthBar;
+    public GameController gc; 
+
+
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip sfx; 
+
 
     // Start is called before the first frame update - é chamado uma vez ao inicializar o jogo
     void Start() {
@@ -57,6 +68,7 @@ public class Player : MonoBehaviour {
         if(Input.GetButtonDown("Fire1")) {
             isAttacking = true;
             anim.SetInteger("transition", 3);
+            audioSource.PlayOneShot(sfx);
 
             Collider2D hit = Physics2D.OverlapCircle(firePoint.position, atkRadius, enemyLayer);
 
@@ -79,14 +91,15 @@ public class Player : MonoBehaviour {
         Gizmos.DrawWireSphere(firePoint.position, atkRadius);
     }
 
-    public void OnHit(int damage) {
+    public void OnHit(float damage) {
         recoveryCount += Time.deltaTime;
 
         if(recoveryCount >= recoveryTime && isDead == false) {
-            anim.SetTrigger("hit");
-            health--;
 
-            healthBar.fillAmount -= damage/health;
+            anim.SetTrigger("hit");
+            health -= damage;
+
+            healthBar.fillAmount = health / 100;
 
             GameOver();
 
@@ -98,6 +111,7 @@ public class Player : MonoBehaviour {
         if(health <= 0) {
             anim.SetTrigger("death");
             isDead = true; 
+            gc.ShowGameOver();
         }
     }
 

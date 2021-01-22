@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class FlightEnemy : MonoBehaviour {
 
-    public int health;
-    public int damage; 
+    public float health;
+    public float damage; 
 
     public float speed; 
     float initialSpeed;
@@ -15,6 +15,8 @@ public class FlightEnemy : MonoBehaviour {
 
     public Rigidbody2D rig;
     public Animator anim;
+
+    bool isDead; 
 
     Transform player;
 
@@ -51,16 +53,19 @@ public class FlightEnemy : MonoBehaviour {
  
     void FixedUpdate() {
 
-        if(isRight) {
-            rig.velocity = new Vector2(speed, rig.velocity.y);
-            transform.eulerAngles = new Vector2(0, 0);
+        if (isDead == false) {
+            if(isRight) {
+                rig.velocity = new Vector2(speed, rig.velocity.y);
+                transform.eulerAngles = new Vector2(0, 0);
+            }
+            else{
+                rig.velocity = new Vector2(-speed, rig.velocity.y);
+                transform.eulerAngles = new Vector2(0, 180);
+            }
         }
-        else{
-            rig.velocity = new Vector2(-speed, rig.velocity.y);
-            transform.eulerAngles = new Vector2(0, 180);
-        }
-
-        
+        else {
+            speed = 0f;
+        }        
     }
 
     // need to be public, so player can access it
@@ -69,6 +74,7 @@ public class FlightEnemy : MonoBehaviour {
         health--;
 
         if(health <= 0) {
+            isDead = true;
             speed = 0f; 
             anim.SetTrigger("death");
             Destroy(gameObject, 1f);
