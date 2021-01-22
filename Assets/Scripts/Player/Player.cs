@@ -23,6 +23,7 @@ public class Player : MonoBehaviour {
         OnAttack();
     }
 
+    // For flying monster put Rigidbody2D type to kinematic or gravity Scale to 0
     void Jump() {
         if(Input.GetButtonDown("Jump")) { 
 
